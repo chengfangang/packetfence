@@ -22,7 +22,11 @@ check file syslog with path /var/log/messages
 
 check file drbd with path /proc/drbd
     group drbd
-    if match "Inconsistent" then alert  
+    if match "Inconsistent" then alert
+    if match "Secondary/Primary" then exec "/usr/bin/monit unmonitor drbdfs"
+    if match "Secondary/Unknown" then exec "/usr/bin/monit unmonitor drbdfs"
+    if match "Primary/Secondary" then exec "/usr/bin/monit monitor drbdfs"
+    if match "Primary/Unknown" then exec "/usr/bin/monit monitor drbdfs"
 
 check filesystem drbdfs with path /dev/drbd0
     group drbd
