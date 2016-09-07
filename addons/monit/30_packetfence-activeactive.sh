@@ -1,5 +1,13 @@
 #!/bin/bash
 
+ALERT_EMAIL=$1
+
+if [ -z "$ALERT_EMAIL" ]; then
+    echo 'Missing parameter(s)\n'
+    echo 'Syntax should be: ./30_packetfence-activeactive.sh "alerting@email.address"'
+    exit 1;
+fi
+
 # OS specific binaries declarations
 if [ -e "/etc/debian_version" ]; then
     FREERADIUS_BIN=freeradius
@@ -11,7 +19,13 @@ fi
 cat >> /etc/monit.d/packetfence.monit << EOF
 
 
+
 # PacketFence active-active clustering checks
+
+check program master with path /usr/local/pf/addons/monit/testactiveip.sh
+       noalert $ALERT_EMAIL
+       if status != 0 then exec "/usr/bin/monit unmonitor packetfence-pfmon"
+       if status = 0 then exec "/usr/bin/monit monitor packetfence-pfmon"
 
 check process packetfence-haproxy with pidfile /usr/local/pf/var/run/haproxy.pid
     group PacketFence
