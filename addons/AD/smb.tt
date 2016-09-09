@@ -13,14 +13,14 @@ pid directory = /usr/local/pf/var/run/[% domain %]
 lock directory = /var/cache/samba[% domain %]
 private dir = /var/cache/samba[% domain %]
 
-kerberos method = system keytab
-security = ADS
+kerberos method = secrets
+security = ads
 winbind use default domain = no
 idmap uid = 600-20000
 idmap gid = 600-20000
 template shell = /bin/bash
 winbind expand groups = 10
-password server = [% ad_server %]
+password server = [% domain %]
 domain master = no
 local master = no
 preferred master = no
