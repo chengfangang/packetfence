@@ -98,16 +98,19 @@ sub join_domain {
     regenerate_configuration();
 
     my $info = $ConfigDomain{$domain};
-    my ($status, $output) = run("/usr/bin/sudo /sbin/ip netns exec $domain /usr/sbin/chroot $chroot_path net ads keytab create -S $info->{ad_server} $info->{dns_name} -s /etc/samba/$domain.conf -U '$info->{bind_dn}%$info->{bind_pass}' -d 10 2>&1");
+    
+    my ($status, $output) = run("/usr/bin/sudo /sbin/ip netns exec $domain /usr/sbin/chroot $chroot_path net ads join -S $info->{ad_server} $info->{dns_name} -s /etc/samba/$domain.conf -U '$info->{bind_dn}%$info->{bind_pass}' -d 10 2>&1");
+    
     $logger->info("domain join : ".$output);
 
-    my ($status2, $output2) = run("/usr/bin/sudo /sbin/ip netns exec $domain /usr/sbin/chroot $chroot_path net ads join -S $info->{ad_server} $info->{dns_name} -s /etc/samba/$domain.conf -U '$info->{bind_dn}%$info->{bind_pass}' -d 10 2>&1");
-    
-    $logger->info("domain join : ".$output2);
+    #my ($status2, $output2) = run("/usr/bin/sudo /sbin/ip netns exec $domain /usr/sbin/chroot $chroot_path net ads keytab create -S $info->{ad_server} $info->{dns_name} -s /etc/samba/$domain.conf -U '$info->{bind_dn}%$info->{bind_pass}' -d 10 2>&1");
+    #$logger->info("keytab create : ".$output2);
+
 
     restart_winbinds();
 
-    return $output . $output2;
+    #return $output . $output2;
+    return $output;
 }
 
 =head2 rejoin_domain
