@@ -30,8 +30,6 @@ use pf::config qw(
     %ConfigDomain
     $local_secret
 );
-use pfconfig::cached_array;
-tie my @cli_switches, 'pfconfig::cached_array', 'resource::cli_switches';
 use pf::file_paths qw(
     $conf_dir
     $install_dir
@@ -39,7 +37,11 @@ use pf::file_paths qw(
 );
 use pf::util;
 
+use pfconfig::cached_array;
+
 extends 'pf::services::manager';
+
+tie my @cli_switches, 'pfconfig::cached_array', 'resource::cli_switches';
 
 has options => (is => 'rw');
 
